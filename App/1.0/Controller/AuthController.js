@@ -32,21 +32,21 @@ module.exports = {
 							// update token and status
 							user.save()
 
-							res.status(400).send({
+							return res.status(400).send({
 								message: "success",
 								token: user.token
 							})
 						});
 
 					}else{
-						msg = {
+						return res.status(400).send({
 							message: "Incorrect username or password"
-						}
+						})
 					}
 				});
 			})
 			.catch(function(error){
-				res.status(400).send(error)
+				return res.status(400).send(error)
 			})
 	},
 	logout(req, res){
@@ -64,15 +64,13 @@ module.exports = {
 				// update token and status
 				user.save()
 
-				res.status(400).send({
+				return res.status(200).send({
 					message: "success",
 					token: user.token
 				})
-
-				res.status(200).send("logout")
 			})
 			.catch(function(error){
-				res.status(400).send(error)
+				return res.status(400).send(error)
 			})
 	}
 }

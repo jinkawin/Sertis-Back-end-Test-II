@@ -1,6 +1,11 @@
-const User = require('../Model/MongoDB/User')
+const User = require('../Model/MongoDB/User'),
+	  Card = require('../Model/MongoDB/Card')
+
 
 module.exports = {
+	// TODO: check session id to prevent cookie hijacking
+	// TODO: add check sum to prevent modification/ man in the middle
+
 	getAll(req, res){
 		// var data = User.findAll().then(function(result){
 		// 	res.status(200).send(result);
@@ -15,18 +20,72 @@ module.exports = {
 
 		res.status(200).send("yes");
 	},
-	getAll(req, res){
-		// var data = User.findAll().then(function(result){
-		// 	res.status(200).send(result);
-		// })
-		// .catch(function(error){
-		// 	console.error(eerrorrr);
-		// })
-		// User.save({
-		// 	username : "jinkawin4",
-		// 	password: "12345"
-		// });
+	addNewCard(req, res){
+		if(!req.body.token) return res.status(400).send({
+			message: "Bad request"
+		})
 
-		res.status(200).send("yes");
+		User.findUserFromToken(req.body.token)
+			.then(function(user){
+
+				// If there is no such a user in database
+				if(!user) return res.status(400).send({
+					message: "Token expired"
+				})
+
+				// add author name by using token
+				var data = req.body
+				data.author = user.username
+
+				// Save the card
+				Card.save(data)
+					.then(function(result){
+						return res.status(200).send({
+							message: "success"
+						})
+					})
+					.catch(function(error){
+						return res.status(200).send(error)
+					})
+
+			})
+			.catch(function(error){
+				return res.status(400).send(error)
+			})
+	},
+	editCard(req, res){
+		if(!req.body.token) return res.status(400).send({
+			message: "Bad request"
+		})
+
+		// User.findUserFromToken(req.body.token)
+		// 	.then(function(user){
+
+		// 		// If there is no such a user in database
+		// 		if(!user) return res.status(400).send({
+		// 			message: "Token expired"
+		// 		})
+
+		// 		// add author name by using token
+		// 		var data = req.body
+		// 		data.author = user.username
+
+		// 		// Save the card
+		// 		Card.save(data)
+		// 			.then(function(result){
+		// 				return res.status(200).send({
+		// 					message: "success"
+		// 				})
+		// 			})
+		// 			.catch(function(error){
+		// 				return res.status(200).send({
+		// 					message: "Something went wrong"
+		// 				})
+		// 			})
+
+		// 	})
+		// 	.catch(function(error){
+		// 		return res.status(400).send(error)
+		// 	})
 	}
 }
