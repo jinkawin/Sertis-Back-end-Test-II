@@ -6,6 +6,7 @@ var CounterSchema = new Schema({
     name: {type: String, required: true},
     seq: { type: Number, default: 0 }
 })
+
 var counter = mongoose.model('counter', CounterSchema)
 
 var CardSchema = new Schema({

@@ -1,5 +1,9 @@
 # Sertis Back-end Test (II)
 
+## Future Work
+API's security can be improved in many aspects. First of all, to avoid "man in the middle" attack or modification, MD5 will be implemented. This will work as a checksum. If there is a modification, the hash value will be changed. Secondly, to maximise usability and maintain integrity, OAuth2 would be better for authentication. Thirdly, session id must be attached to the request to prevent cookie hijacking. Finally, XSS can be prevented by encoding special characters, likes htmlspecialchars().
+
+
 ## Getting Started
 ### Installation
 ```

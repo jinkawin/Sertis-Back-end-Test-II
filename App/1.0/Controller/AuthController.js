@@ -1,6 +1,7 @@
 const User = require('../Model/MongoDB/User')
 
-var generator = require('generate-password');
+var generator = require('generate-password')
+var security = require('@lib/Security/Security')
 
 module.exports = {
 	login(req, res){
