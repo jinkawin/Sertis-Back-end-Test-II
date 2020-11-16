@@ -6,20 +6,6 @@ module.exports = {
 	// TODO: check session id to prevent cookie hijacking
 	// TODO: add check sum to prevent modification/ man in the middle
 
-	getAll(req, res){
-		// var data = User.findAll().then(function(result){
-		// 	res.status(200).send(result);
-		// })
-		// .catch(function(error){
-		// 	console.error(eerrorrr);
-		// })
-		// User.save({
-		// 	username : "jinkawin4",
-		// 	password: "12345"
-		// });
-
-		res.status(200).send("yes");
-	},
 	addNewCard(req, res){
 		if(!req.body.token) return res.status(400).send({
 			message: "Bad request"

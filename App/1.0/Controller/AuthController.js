@@ -5,7 +5,9 @@ var generator = require('generate-password');
 module.exports = {
 	login(req, res){
 
-		// TODO: validate feild wheter there is username or password or not.
+		if(!req.body.username || !req.body.password) return res.status(400).send({
+			message: "Bad Request"
+		})
 
 		User.findUserFromUsername(req.body.username)
 			.then(function(user){
@@ -50,6 +52,11 @@ module.exports = {
 			})
 	},
 	logout(req, res){
+
+		if(!req.body.token) return res.status(400).send({
+			message: "Bad Request"
+		})
+
 		User.findUserFromToken(req.body.token)
 			.then(function(user){
 
