@@ -58,7 +58,10 @@ module.exports = {
         var newUser = new User(data)
         return newUser.save()
     },
-    findUser(user){
-        return User.findOne({username: user.username}).exec()
+    findUserFromUsername(username){
+        return User.findOne({username: username}).exec()
+    },
+    findUserFromToken(token){
+        return User.findOne({token: token}).exec()
     }
 }
