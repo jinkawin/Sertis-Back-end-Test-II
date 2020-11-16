@@ -11,7 +11,9 @@ module.exports = {
 
 		var data = {
 			username: req.body.username,
-			password: req.body.username + "_" + password
+			password: req.body.username + "_" + password,
+			isLogin: false,
+			token: ''
 		}
 
 		User.save(data)

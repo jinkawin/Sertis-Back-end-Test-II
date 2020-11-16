@@ -20,20 +20,33 @@ module.exports = {
 
 					var msg;
 					if(isMatch){
-						msg = {
-							message: "logged in!"
-						}
+						require('crypto').randomBytes(48, function(err, buffer) {
+							var token;
+
+							user.token = (user.isLogin)?user.token:buffer.toString('base64') // create or get the old one
+							user.isLogin = true
+
+							user.save()
+
+							res.status(400).send({
+								message: "success",
+								token: user.token
+							})
+						});
+
 					}else{
 						msg = {
 							message: "Incorrect username or password"
 						}
 					}
-
-					res.status(400).send(msg)
 				});
 			})
 			.catch(function(error){
 				res.status(400).send(error)
 			})
+	},
+	logout(){
+		// isLogin = false
+		// token = ""
 	}
 }

@@ -11,8 +11,12 @@ var UserSchema = new Schema({
         index:{unique:true}},
     password: {
         type: String,
-        required: [true, 'There is no password.']
-    }
+        required: [true, 'There is no password.']},
+    isLogin: {
+        type: Boolean,
+        default: false},
+    token: {
+        type: String}
 });
 
 UserSchema.pre('save', function(next) {
