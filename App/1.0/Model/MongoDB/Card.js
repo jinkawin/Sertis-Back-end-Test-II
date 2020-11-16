@@ -55,7 +55,7 @@ module.exports = {
         var newCard = new Card(data)
         return newCard.save()
     },
-    findCard(user){
-        return Card.findOne({username: user.username}).exec()
+    findCardById(id){
+        return Card.findOne({card_id: id}).exec()
     }
 }
