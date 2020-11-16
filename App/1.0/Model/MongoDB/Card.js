@@ -57,5 +57,8 @@ module.exports = {
     },
     findCardById(id){
         return Card.findOne({card_id: id}).exec()
-    }
+    },
+    deleteCardById(id){
+        return Card.deleteOne({card_id: id}).exec()
+    },
 }
