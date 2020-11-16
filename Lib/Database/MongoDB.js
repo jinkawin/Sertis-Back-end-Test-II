@@ -28,7 +28,8 @@ MongoDB.prototype.connect = function(connection){
     }
 
     /* Connect Mongo DB */
-    uri = connectFormat + connectionStr + '/' + connection.database
+    // uri = connectFormat + connectionStr + '/' + connection.database
+    uri = "mongodb+srv://jinkawin:jinkawin+1234@cluster0.dr65m.mongodb.net/sertis?retryWrites=true&w=majority"
     mongoose.connect(uri, options).then(
         () => {
             Log.write(`${connection.name} Connection has been established successfully`)
