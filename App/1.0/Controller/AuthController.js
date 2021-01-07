@@ -52,11 +52,3 @@ module.exports = {
 		return res.status(400).send(responseBody)
 	}
 }
-
-var isLoginInputValid = function(requestBody){
-	return (requestBody.username && requestBody.password)?true:false
-}
-
-var isLogoutInputValid = function(requestBody){
-	return (requestBody.token)?true:false
-}

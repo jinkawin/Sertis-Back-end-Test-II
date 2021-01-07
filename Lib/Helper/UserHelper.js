@@ -18,7 +18,7 @@ UserHelper.prototype.verifyUserByToken = function(token){
         User.findUserFromToken(token)
             .then(function(user){
                 if(!user){
-                    reject("Cannot versify user")
+                    reject("Token expired")
                 }
                 resolve(user)
             })

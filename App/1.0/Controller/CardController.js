@@ -33,48 +33,27 @@ module.exports = {
 		}
 
 	},
-	editCard(req, res){
-		if(!req.body.token) return res.status(400).send({
-			message: "Bad request"
-		})
+	async editCard(req, res){
+		var cardHelper = new CardHelper()
+		var responseHelper = new ResponseHelper(res)
+		var userHelper = new UserHelper()
 
-		User.findUserFromToken(req.body.token)
-			.then(function(user){
+		if(!verificationHelper.isTokenValid(req.body)){
+			return responseHelper.repondBadRequest()
+		}
 
-				// If there is no such a user in database
-				if(!user) return res.status(400).send({
-					message: "Token expired"
-				})
+		try{
+			var user = await userHelper.verifyUserByToken(req.body.token)
+			var card = await cardHelper.updateCardByCardId(user, req.body)
+			responseHelper.addMessage("success")
+			responseHelper.addBody(card)
 
-				// Save the card
-				Card.findCardById(req.body.card_id)
-					.then(function(card){
-
-						// If there is no such a card
-						if(!card) return res.status(400).send({
-							message: "Something went wrong"
-						})
-
-						// update field and save
-						card.name = req.body.name
-						card.status = req.body.status
-						card.content = req.body.content
-						card.category = req.body.category
-						card.save()
-
-						return res.status(200).send({
-							message: "success"
-						})
-					})
-					.catch(function(error){
-						return res.status(200).send({
-							message: "Something went wrong"
-						})
-					})
-			})
-			.catch(function(error){
-				return res.status(400).send(error)
-			})
+		}catch (error){
+			responseHelper.addError(error)
+		}finally{
+			var responseBody = responseHelper.respond()
+			return res.status(400).send(responseBody)
+		}
 	},
 	deleteCard(req, res){
 		if(!req.body.token) return res.status(400).send({
