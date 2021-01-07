@@ -3,10 +3,16 @@ const User = require('../Model/MongoDB/User'),
 
 
 module.exports = {
-	// TODO: check session id to prevent cookie hijacking
-	// TODO: add check sum to prevent modification/ man in the middle
 
 	addNewCard(req, res){
+
+		/*
+			- find user form token
+			- add detail to card
+			- save card
+
+		*/
+
 		if(!req.body.token) return res.status(400).send({
 			message: "Bad request"
 		})

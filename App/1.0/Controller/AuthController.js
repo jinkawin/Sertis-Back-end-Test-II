@@ -1,13 +1,14 @@
 const User = require('../Model/MongoDB/User')
 var UserHelper = require('@lib/Helper/UserHelper')
 var ResponseHelper = require('@lib/Helper/ResponseHelper')
+var verificationHelper = require('@lib/Helper/VerificationHelper')
 
 module.exports = {
 	async login(req, res){
 		var userHelper = new UserHelper()
 		var responseHelper = new ResponseHelper()
 
-		if(!isLoginInputValid(req.body)){
+		if(!verificationHelper.isCredentialValid(req.body)){
 			responseHelper.addMessage("Bad Request")
 		}
 
@@ -34,7 +35,7 @@ module.exports = {
 		var userHelper = new UserHelper()
 		var responseHelper = new ResponseHelper()
 
-		if(!isLogoutInputValid(req.body)){
+		if(!verificationHelper.isTokenValid(req.body)){
 			responseHelper.addMessage("Bad Request")
 		}
 
