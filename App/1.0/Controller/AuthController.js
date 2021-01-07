@@ -6,10 +6,10 @@ var verificationHelper = require('@lib/Helper/VerificationHelper')
 module.exports = {
 	async login(req, res){
 		var userHelper = new UserHelper()
-		var responseHelper = new ResponseHelper()
+		var responseHelper = new ResponseHelper(res)
 
 		if(!verificationHelper.isCredentialValid(req.body)){
-			responseHelper.addMessage("Bad Request")
+			return responseHelper.repondBadRequest()
 		}
 
 		var user = await User.findUserFromUsername(req.body.username)
@@ -36,7 +36,7 @@ module.exports = {
 		var responseHelper = new ResponseHelper()
 
 		if(!verificationHelper.isTokenValid(req.body)){
-			responseHelper.addMessage("Bad Request")
+			return responseHelper.repondBadRequest()
 		}
 
 		var user = await User.findUserFromToken(req.body.token)

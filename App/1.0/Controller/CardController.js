@@ -13,14 +13,11 @@ module.exports = {
 	async addNewCard(req, res){
 
 		var cardHelper = new CardHelper()
-		var responseHelper = new ResponseHelper()
+		var responseHelper = new ResponseHelper(res)
 		var userHelper = new UserHelper()
 
 		if(!verificationHelper.isTokenValid(req.body)){
-			responseHelper.addMessage("Bad Request")
-
-			var responseBody = responseHelper.respond()
-			return res.status(400).send(responseBody)
+			return responseHelper.repondBadRequest()
 		}
 
 		try{
