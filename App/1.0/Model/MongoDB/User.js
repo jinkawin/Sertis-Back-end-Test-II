@@ -63,5 +63,5 @@ module.exports = {
     },
     findUserFromToken(token){
         return User.findOne({token: token}).exec()
-    }
+    },
 }

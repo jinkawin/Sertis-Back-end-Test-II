@@ -29,6 +29,7 @@
     "nodemon": "^1.18.9"
   },
   "_moduleAliases": {
+    "@app": "App/1.0",
     "@config": "Config",
     "@lib": "Lib"
   }

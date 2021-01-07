@@ -1,56 +1,41 @@
 const User = require('../Model/MongoDB/User')
 
 var generator = require('generate-password')
+
 var security = require('@lib/Security/Security')
 
+var userHelper = require('@lib/Helper/UserHelper')
+var responseHelper = require('@lib/Helper/ResponseHelper')
+
+var isLoginInputValid = function(requestBody){
+	return (requestBody.username && requestBody.password)?true:false
+}
+
 module.exports = {
-	login(req, res){
+	async login(req, res){
+		if(!isLoginInputValid(req.body)){
+			responseHelper.addMessage("Bad Request")
+		}
 
-		if(!req.body.username || !req.body.password) return res.status(400).send({
-			message: "Bad Request"
-		})
+		var user = await User.findUserFromUsername(req.body.username)
+		userHelper.setUser(user)
 
-		User.findUserFromUsername(req.body.username)
-			.then(function(user){
+		userHelper.login(req.body)
+			.then(function(token){
+				responseHelper.addMessage("success")
+				responseHelper.addToken(token)
 
-				// If there is no such a user in database
-				if(!user) return res.status(400).send({
-					message: "Incorrect username or password"
-				})
-
-				// test a matching password
-				user.comparePassword(req.body.password, function(err, isMatch) {
-					if (err) res.status(400).send(err);
-
-					var msg;
-					if(isMatch){
-						// Generate token
-						require('crypto').randomBytes(48, function(err, buffer) {
-							var token;
-
-							// create or get the old one
-							user.token = (user.isLogin)?user.token:buffer.toString('hex')
-							user.isLogin = true
-
-							// update token and status
-							user.save()
-
-							return res.status(400).send({
-								message: "success",
-								token: user.token
-							})
-						});
-
-					}else{
-						return res.status(400).send({
-							message: "Incorrect username or password"
-						})
-					}
-				});
 			})
 			.catch(function(error){
-				return res.status(400).send(error)
+				console.log(error)
+
+				responseHelper.addMessage("Cannot login")
 			})
+			.finally(function(){
+				var responseBody = responseHelper.respond()
+				return res.status(400).send(responseBody)
+			})
+
 	},
 	logout(req, res){
 
