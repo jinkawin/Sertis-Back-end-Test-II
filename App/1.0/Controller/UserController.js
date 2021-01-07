@@ -1,39 +1,32 @@
 const User = require('../Model/MongoDB/User')
 
-var generator = require('generate-password');
+var ResponseHelper = require('@lib/Helper/ResponseHelper')
+var verificationHelper = require('@lib/Helper/VerificationHelper')
+var UserHelper = require('@lib/Helper/UserHelper')
 
 module.exports = {
-	signUp(req, res){
-		var password = generator.generate({
-			length: 8,
-			numbers: true
-		});
+	async signUp(req, res){
 
-		var data = {
-			username: req.body.username,
-			password: req.body.username + "_" + password,
-			isLogin: false,
-			token: ''
+
+		var responseHelper = new ResponseHelper(res)
+		var userHelper = new UserHelper()
+
+		if(!verificationHelper.isUsernameValid(req.body)){
+			return responseHelper.repondBadRequest()
 		}
 
-		User.save(data)
-			.then(function(result){
-				res.status(200).send(data)
-			})
-			.catch(function(error){
-				var msg;
-				if (error.name === 'MongoError' && error.code === 11000) {
-					msg = {
-						message: "User is already existed!"
-					}
-				} else {
-					msg = {
-						message: "There is no username."
-					}
-				}
+		try{
+			var user = await userHelper.initAndSaveUser(req.body.username)
+			responseHelper.addMessage("success")
 
-				res.status(400).send(msg)
-			})
+			console.log("yes")
+
+		}catch (error){
+			responseHelper.addError(error)
+		}finally{
+			var responseBody = responseHelper.respond()
+			return res.status(400).send(responseBody)
+		}
 
 	}
 }

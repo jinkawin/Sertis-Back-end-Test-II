@@ -1,5 +1,8 @@
 const User = require('@app/Model/MongoDB/User')
-const { throws } = require('assert')
+const PASSWORD_LENGTH = 8
+
+var generator = require('generate-password');
+var verificationHelper = require('@lib/Helper/VerificationHelper')
 
 function UserHelper(){
 }
@@ -7,6 +10,36 @@ function UserHelper(){
 UserHelper.prototype.setUser = function(user){
     this.currentUser = user
     _setUser(user)
+}
+
+UserHelper.prototype.initAndSaveUser = function(username){
+    return new Promise((resolve, reject) => {
+        var userData = {
+            username: username,
+            password: username + "_" + this.generatePassword(PASSWORD_LENGTH),
+            isLogin: false,
+            token: ''
+        }
+
+        User.save(userData)
+			.then(function(result){
+                resolve(result)
+			})
+			.catch(function(error){
+				if (verificationHelper.isUserAlreadyExisted(error)) {
+					reject("User is already existed!")
+				} else {
+					reject(error)
+                }
+			})
+    });
+}
+
+UserHelper.prototype.generatePassword = function(passwordLength){
+    return generator.generate({
+        length: passwordLength,
+        numbers: true
+    });
 }
 
 UserHelper.prototype.getCurrentUser = function(){
@@ -37,7 +70,6 @@ UserHelper.prototype.logout = function(){
     this.currentUser.token = ""
     this.currentUser.isLogin = false
 
-    // update token and status
     this.currentUser.save()
 }
 
