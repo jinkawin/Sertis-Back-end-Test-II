@@ -12,6 +12,10 @@ UserHelper.prototype.setUser = function(user){
     _setUser(user)
 }
 
+function _setUser(user){
+    this.currentUser = user
+}
+
 UserHelper.prototype.initAndSaveUser = function(username){
     return new Promise((resolve, reject) => {
         var userData = {
@@ -71,10 +75,6 @@ UserHelper.prototype.logout = function(){
     this.currentUser.isLogin = false
 
     this.currentUser.save()
-}
-
-function _setUser(user){
-    this.currentUser = user
 }
 
 function isPasswordCorrect(password){
