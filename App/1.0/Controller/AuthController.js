@@ -1,4 +1,4 @@
-const User = require('../Model/MongoDB/User')
+const User = require('@app/Model/MongoDB/User')
 var UserHelper = require('@lib/Helper/UserHelper')
 var ResponseHelper = require('@lib/Helper/ResponseHelper')
 var verificationHelper = require('@lib/Helper/VerificationHelper')
@@ -18,7 +18,7 @@ module.exports = {
 		userHelper.login(req.body)
 			.then(function(token){
 				responseHelper.addMessage("success")
-				responseHelper.addToken(token)
+				responseHelper.addBody({token})
 
 			})
 			.catch(function(error){

@@ -1,49 +1,40 @@
-const User = require('../Model/MongoDB/User'),
-	  Card = require('../Model/MongoDB/Card')
+const User = require('@app/Model/MongoDB/User'),
+	  Card = require('@app/Model/MongoDB/Card')
+
+
+var CardHelper = require('@lib/Helper/CardHelper')
+var ResponseHelper = require('@lib/Helper/ResponseHelper')
+var verificationHelper = require('@lib/Helper/VerificationHelper')
+var UserHelper = require('@lib/Helper/UserHelper')
 
 
 module.exports = {
 
-	addNewCard(req, res){
+	async addNewCard(req, res){
 
-		/*
-			- find user form token
-			- add detail to card
-			- save card
+		var cardHelper = new CardHelper()
+		var responseHelper = new ResponseHelper()
+		var userHelper = new UserHelper()
 
-		*/
+		if(!verificationHelper.isTokenValid(req.body)){
+			responseHelper.addMessage("Bad Request")
 
-		if(!req.body.token) return res.status(400).send({
-			message: "Bad request"
-		})
+			var responseBody = responseHelper.respond()
+			return res.status(400).send(responseBody)
+		}
 
-		User.findUserFromToken(req.body.token)
-			.then(function(user){
+		try{
+			var user = await userHelper.verifyUserByToken(req.body.token)
+			cardHelper.saveNewCard(user, req.body)
+			responseHelper.addMessage("success")
 
-				// If there is no such a user in database
-				if(!user) return res.status(400).send({
-					message: "Token expired"
-				})
+		}catch (error){
+			responseHelper.addError(error)
+		}finally{
+			var responseBody = responseHelper.respond()
+			return res.status(400).send(responseBody)
+		}
 
-				// add author name by using token
-				var data = req.body
-				data.author = user.username
-
-				// Save the card
-				Card.save(data)
-					.then(function(result){
-						return res.status(200).send({
-							message: "success"
-						})
-					})
-					.catch(function(error){
-						return res.status(200).send(error)
-					})
-
-			})
-			.catch(function(error){
-				return res.status(400).send(error)
-			})
 	},
 	editCard(req, res){
 		if(!req.body.token) return res.status(400).send({

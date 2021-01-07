@@ -1,4 +1,5 @@
 const User = require('@app/Model/MongoDB/User')
+const { throws } = require('assert')
 
 function UserHelper(){
 }
@@ -10,6 +11,18 @@ UserHelper.prototype.setUser = function(user){
 
 UserHelper.prototype.getCurrentUser = function(){
     return this.currentUser
+}
+
+UserHelper.prototype.verifyUserByToken = function(token){
+    return new Promise((resolve, reject) => {
+        User.findUserFromToken(token)
+            .then(function(user){
+                if(!user){
+                    reject("Cannot versify user")
+                }
+                resolve(user)
+            })
+    });
 }
 
 UserHelper.prototype.login = async function(requestBody){

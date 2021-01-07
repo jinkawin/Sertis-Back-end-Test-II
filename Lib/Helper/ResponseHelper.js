@@ -1,15 +1,18 @@
 var resBody = {}
 
 function ResponseHelper(){
-    resBody = {}
+    resBody = {
+        data: {},
+        error: {}
+    }
 }
 
 ResponseHelper.prototype.addMessage = function(message){
-    resBody.message = message
+    resBody.data.message = message
 }
 
-ResponseHelper.prototype.addToken= function(token){
-    resBody.token = token
+ResponseHelper.prototype.addBody = function(data){
+    resBody.data = Object.assign(resBody.data, data)
 }
 
 ResponseHelper.prototype.addError= function(error){
