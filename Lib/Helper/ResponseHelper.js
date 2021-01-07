@@ -8,6 +8,7 @@ function ResponseHelper(response){
     }
 
     res = response
+    this.resCode = 200
 }
 
 ResponseHelper.prototype.addMessage = function(message){
@@ -22,6 +23,14 @@ ResponseHelper.prototype.addError= function(error){
     resBody.error = error
 }
 
+ResponseHelper.prototype.setResCode = function(code){
+    this.resCode = code
+}
+
+ResponseHelper.prototype.getResCode = function(code){
+    return this.resCode
+}
+
 ResponseHelper.prototype.repondBadRequest = function(){
     this.addMessage("Bad Request")
 
@@ -29,7 +38,7 @@ ResponseHelper.prototype.repondBadRequest = function(){
 }
 
 ResponseHelper.prototype.respond = function(){
-    return resBody
+    return res.status(this.resCode).send(resBody)
 }
 
 module.exports = ResponseHelper

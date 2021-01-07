@@ -23,9 +23,9 @@ module.exports = {
 
 		}catch (error){
 			responseHelper.addError(error)
+			responseHelper.setResCode(400)
 		}finally{
-			var responseBody = responseHelper.respond()
-			return res.status(400).send(responseBody)
+			return responseHelper.respond()
 		}
 
 	},
@@ -46,9 +46,9 @@ module.exports = {
 
 		}catch (error){
 			responseHelper.addError(error)
+			responseHelper.setResCode(400)
 		}finally{
-			var responseBody = responseHelper.respond()
-			return res.status(400).send(responseBody)
+			return responseHelper.respond()
 		}
 	},
 	async deleteCard(req, res){
@@ -68,9 +68,9 @@ module.exports = {
 
 		}catch (error){
 			responseHelper.addError(error)
+			responseHelper.setResCode(400)
 		}finally{
-			var responseBody = responseHelper.respond()
-			return res.status(400).send(responseBody)
+			return responseHelper.respond()
 		}
 	}
 }

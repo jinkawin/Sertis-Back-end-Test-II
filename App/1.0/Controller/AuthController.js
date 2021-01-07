@@ -24,16 +24,16 @@ module.exports = {
 			.catch(function(error){
 				responseHelper.addError(error)
 				responseHelper.addMessage("Cannot login")
+				responseHelper.setResCode(400)
 			})
 			.finally(function(){
-				var responseBody = responseHelper.respond()
-				return res.status(400).send(responseBody)
+				return responseHelper.respond()
 			})
 
 	},
 	async logout(req, res){
 		var userHelper = new UserHelper()
-		var responseHelper = new ResponseHelper()
+		var responseHelper = new ResponseHelper(res)
 
 		if(!verificationHelper.isTokenValid(req.body)){
 			return responseHelper.repondBadRequest()
@@ -42,13 +42,14 @@ module.exports = {
 		var user = await User.findUserFromToken(req.body.token)
 		if(!user){
 			responseHelper.addMessage("Cannot logout")
+			responseHelper.setResCode(400)
 		}else{
 			userHelper.setUser(user)
 			userHelper.logout()
 
 			responseHelper.addMessage("success")
 		}
-		var responseBody = responseHelper.respond()
-		return res.status(400).send(responseBody)
+
+		return responseHelper.respond()
 	}
 }

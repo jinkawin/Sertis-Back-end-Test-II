@@ -18,9 +18,9 @@ module.exports = {
 
 		}catch (error){
 			responseHelper.addError(error)
+			responseHelper.setResCode(400)
 		}finally{
-			var responseBody = responseHelper.respond()
-			return res.status(400).send(responseBody)
+			return responseHelper.respond()
 		}
 
 	}
