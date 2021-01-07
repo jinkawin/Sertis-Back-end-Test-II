@@ -1,5 +1,7 @@
 const Card = require('@app/Model/MongoDB/Card')
 
+var verificationHelper = require('@lib/Helper/VerificationHelper')
+
 function CardHelper(){
 }
 
@@ -10,22 +12,16 @@ CardHelper.prototype.saveNewCard = function(user, cardDetail){
     return Card.save(card)
 }
 
-CardHelper.prototype.updateCard = function(user, cardDetail){
+CardHelper.prototype.updateCard = function(user, updateDetail){
     return new Promise((resolve, reject) => {
-        Card.findCardById(cardDetail.card_id)
+        Card.findCardById(updateDetail.card_id)
             .then(function(card){
-                console.log(card)
-                if(!card){
-                    reject("Cannot find the given card")
-                }
 
-                // update field and save
-                card.card_id = cardDetail.card_id
-                card.name = cardDetail.name
-                card.status = cardDetail.status
-                card.content = cardDetail.content
-                card.category = cardDetail.category
-                card.save()
+                if(verificationHelper.isUserAbleToEditCard(user, card)){
+                    updateAndSaveCard(card, updateDetail)
+                }else{
+                    reject("Permission denied")
+                }
 
                 resolve(card)
             })
@@ -36,7 +32,6 @@ CardHelper.prototype.deleteCard = function(user, cardDetail){
     return new Promise((resolve, reject) => {
         Card.findCardById(cardDetail.card_id)
             .then(function(card){
-                console.log(card)
                 if(!card){
                     reject("Cannot find the given card")
                 }
@@ -48,12 +43,13 @@ CardHelper.prototype.deleteCard = function(user, cardDetail){
     });
 }
 
-// function getCard(password){
-//     return new Promise((resolve, reject) => {
-//         this.currentUser.comparePassword(password, function(err, isMatch) {
-//             resolve(isMatch)
-//         })
-//     });
-// }
+function updateAndSaveCard(card, updateDetail){
+    card.card_id = updateDetail.card_id
+    card.name = updateDetail.name
+    card.status = updateDetail.status
+    card.content = updateDetail.content
+    card.category = updateDetail.category
+    card.save()
+}
 
 module.exports = CardHelper

@@ -38,8 +38,6 @@ module.exports = {
 			return responseHelper.repondBadRequest()
 		}
 
-		// TODO: check whether username is same as author or not
-
 		try{
 			var user = await userHelper.verifyUserByToken(req.body.token)
 			var card = await cardHelper.updateCard(user, req.body)
@@ -65,7 +63,7 @@ module.exports = {
 
 		try{
 			var user = await userHelper.verifyUserByToken(req.body.token)
-			var card = await cardHelper.deleteCard(user, req.body)
+			await cardHelper.deleteCard(user, req.body)
 			responseHelper.addMessage("success")
 
 		}catch (error){

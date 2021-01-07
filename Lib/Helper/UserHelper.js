@@ -107,5 +107,4 @@ function updateTokenAndStatus(token){
     this.currentUser.save()
 }
 
-
 module.exports = UserHelper

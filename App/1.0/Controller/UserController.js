@@ -1,12 +1,9 @@
-const User = require('../Model/MongoDB/User')
-
 var ResponseHelper = require('@lib/Helper/ResponseHelper')
 var verificationHelper = require('@lib/Helper/VerificationHelper')
 var UserHelper = require('@lib/Helper/UserHelper')
 
 module.exports = {
 	async signUp(req, res){
-
 
 		var responseHelper = new ResponseHelper(res)
 		var userHelper = new UserHelper()
@@ -16,10 +13,8 @@ module.exports = {
 		}
 
 		try{
-			var user = await userHelper.initAndSaveUser(req.body.username)
+			await userHelper.initAndSaveUser(req.body.username)
 			responseHelper.addMessage("success")
-
-			console.log("yes")
 
 		}catch (error){
 			responseHelper.addError(error)
