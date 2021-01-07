@@ -10,7 +10,7 @@ CardHelper.prototype.saveNewCard = function(user, cardDetail){
     return Card.save(card)
 }
 
-CardHelper.prototype.updateCardByCardId = function(user, cardDetail){
+CardHelper.prototype.updateCard = function(user, cardDetail){
     return new Promise((resolve, reject) => {
         Card.findCardById(cardDetail.card_id)
             .then(function(card){
@@ -26,6 +26,22 @@ CardHelper.prototype.updateCardByCardId = function(user, cardDetail){
                 card.content = cardDetail.content
                 card.category = cardDetail.category
                 card.save()
+
+                resolve(card)
+            })
+    });
+}
+
+CardHelper.prototype.deleteCard = function(user, cardDetail){
+    return new Promise((resolve, reject) => {
+        Card.findCardById(cardDetail.card_id)
+            .then(function(card){
+                console.log(card)
+                if(!card){
+                    reject("Cannot find the given card")
+                }
+
+                Card.deleteCardById(cardDetail.card_id)
 
                 resolve(card)
             })
