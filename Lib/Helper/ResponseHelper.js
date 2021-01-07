@@ -1,26 +1,23 @@
-var resBody = {}
-var res = {}
-
 function ResponseHelper(response){
-    resBody = {
+    this.resBody = {
         data: {},
         error: {}
     }
 
-    res = response
+    this.res = response
     this.resCode = 200
 }
 
 ResponseHelper.prototype.addMessage = function(message){
-    resBody.data.message = message
+    this.resBody.data.message = message
 }
 
 ResponseHelper.prototype.addBody = function(data){
-    resBody.data = Object.assign(resBody.data, data)
+    this.resBody.data = Object.assign(this.resBody.data, data)
 }
 
 ResponseHelper.prototype.addError= function(error){
-    resBody.error = error
+    this.resBody.error = error
 }
 
 ResponseHelper.prototype.setResCode = function(code){
@@ -34,11 +31,11 @@ ResponseHelper.prototype.getResCode = function(code){
 ResponseHelper.prototype.repondBadRequest = function(){
     this.addMessage("Bad Request")
 
-    return res.status(400).send(resBody)
+    return this.res.status(400).send(this.resBody)
 }
 
 ResponseHelper.prototype.respond = function(){
-    return res.status(this.resCode).send(resBody)
+    return this.res.status(this.resCode).send(this.resBody)
 }
 
 module.exports = ResponseHelper
