@@ -1,18 +1,12 @@
 const User = require('../Model/MongoDB/User')
-
-var generator = require('generate-password')
-
-var security = require('@lib/Security/Security')
-
-var userHelper = require('@lib/Helper/UserHelper')
-var responseHelper = require('@lib/Helper/ResponseHelper')
-
-var isLoginInputValid = function(requestBody){
-	return (requestBody.username && requestBody.password)?true:false
-}
+var UserHelper = require('@lib/Helper/UserHelper')
+var ResponseHelper = require('@lib/Helper/ResponseHelper')
 
 module.exports = {
 	async login(req, res){
+		var userHelper = new UserHelper()
+		var responseHelper = new ResponseHelper()
+
 		if(!isLoginInputValid(req.body)){
 			responseHelper.addMessage("Bad Request")
 		}
@@ -27,8 +21,7 @@ module.exports = {
 
 			})
 			.catch(function(error){
-				console.log(error)
-
+				responseHelper.addError(error)
 				responseHelper.addMessage("Cannot login")
 			})
 			.finally(function(){
@@ -37,33 +30,32 @@ module.exports = {
 			})
 
 	},
-	logout(req, res){
+	async logout(req, res){
+		var userHelper = new UserHelper()
+		var responseHelper = new ResponseHelper()
 
-		if(!req.body.token) return res.status(400).send({
-			message: "Bad Request"
-		})
+		if(!isLogoutInputValid(req.body)){
+			responseHelper.addMessage("Bad Request")
+		}
 
-		User.findUserFromToken(req.body.token)
-			.then(function(user){
+		var user = await User.findUserFromToken(req.body.token)
+		if(!user){
+			responseHelper.addMessage("Cannot logout")
+		}else{
+			userHelper.setUser(user)
+			userHelper.logout()
 
-				// If there is no such a user in database
-				if(!user) return res.status(400).send({
-					message: "Cannot logout from the system"
-				})
-
-				user.token = ""
-				user.isLogin = false
-
-				// update token and status
-				user.save()
-
-				return res.status(200).send({
-					message: "success",
-					token: user.token
-				})
-			})
-			.catch(function(error){
-				return res.status(400).send(error)
-			})
+			responseHelper.addMessage("success")
+		}
+		var responseBody = responseHelper.respond()
+		return res.status(400).send(responseBody)
 	}
+}
+
+var isLoginInputValid = function(requestBody){
+	return (requestBody.username && requestBody.password)?true:false
+}
+
+var isLogoutInputValid = function(requestBody){
+	return (requestBody.token)?true:false
 }

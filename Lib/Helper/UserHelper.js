@@ -4,7 +4,12 @@ function UserHelper(){
 }
 
 UserHelper.prototype.setUser = function(user){
+    this.currentUser = user
     _setUser(user)
+}
+
+UserHelper.prototype.getCurrentUser = function(){
+    return this.currentUser
 }
 
 UserHelper.prototype.login = async function(requestBody){
@@ -12,6 +17,15 @@ UserHelper.prototype.login = async function(requestBody){
     if(isCorrect){
         return getAndUpdateUserToken()
     }
+}
+
+UserHelper.prototype.logout = function(){
+
+    this.currentUser.token = ""
+    this.currentUser.isLogin = false
+
+    // update token and status
+    this.currentUser.save()
 }
 
 function _setUser(user){
@@ -36,7 +50,7 @@ function getAndUpdateUserToken(){
             // create or get the old one
             user.token = (user.isLogin)?user.token:buffer.toString('hex')
 
-            // updateTokenAndStatus(user.token)
+            updateTokenAndStatus(user.token)
             resolve(user.token)
         });
     });
@@ -49,4 +63,4 @@ function updateTokenAndStatus(token){
 }
 
 
-module.exports = new UserHelper()
+module.exports = UserHelper
