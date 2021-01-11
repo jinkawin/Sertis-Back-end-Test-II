@@ -13,7 +13,8 @@ app.router.use(function(req, res, next) {
 })
 
 app.express.get('/', function(req, res) {
-    res.status(404).send({ error: 'Not found' })
+    res.send("hello world")
+    // res.status(404).send({ error: 'Not found' })
 })
 
 /* Init Database */
